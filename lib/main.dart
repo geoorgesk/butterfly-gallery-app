@@ -13,8 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Modern Butterfly App',
       theme: ThemeData(
         primarySwatch: Colors.teal,
-        scaffoldBackgroundColor:
-            Colors.white, // Removed transparent for no blur
+        scaffoldBackgroundColor: Colors.white,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.teal.withOpacity(0.2),
@@ -39,9 +38,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final List<Butterfly> _butterflies = getButterflies();
+  List<Butterfly> _butterflies = [];
   List<Butterfly> _filteredButterflies = [];
   String _searchQuery = '';
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -50,8 +50,17 @@ class _HomePageState extends State<HomePage>
       vsync: this,
       duration: Duration(milliseconds: 800),
     );
-    _filteredButterflies = List.from(_butterflies);
-    _startStaggeredAnimation();
+    _loadButterflies();
+  }
+
+  Future<void> _loadButterflies() async {
+    final butterflies = await getButterflies();
+    setState(() {
+      _butterflies = butterflies;
+      _filteredButterflies = List.from(_butterflies);
+      _isLoading = false;
+      _startStaggeredAnimation();
+    });
   }
 
   void _startStaggeredAnimation() {
@@ -63,14 +72,12 @@ class _HomePageState extends State<HomePage>
     setState(() {
       _searchQuery = query.toLowerCase();
       _filteredButterflies = _butterflies.where((butterfly) {
-        final details = butterfly.details.toLowerCase();
-        final science = butterfly.science.toLowerCase();
-        final origin = butterfly.origin.toLowerCase();
-        final idStr = butterfly.id.toString();
-        return details.contains(_searchQuery) ||
-            science.contains(_searchQuery) ||
-            origin.contains(_searchQuery) ||
-            idStr.contains(_searchQuery);
+        return butterfly.details.toLowerCase().contains(_searchQuery) ||
+            butterfly.science.toLowerCase().contains(_searchQuery) ||
+            butterfly.origin.toLowerCase().contains(_searchQuery) ||
+            butterfly.commonName.toLowerCase().contains(_searchQuery) ||
+            butterfly.family.toLowerCase().contains(_searchQuery) ||
+            butterfly.id.toString().contains(_searchQuery);
       }).toList();
       if (_filteredButterflies.isNotEmpty) {
         _startStaggeredAnimation();
@@ -84,8 +91,18 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  double _staggerStartForIndex(int index, int total) {
+    // return a start time for staggered animation in [0.0, 0.9]
+    if (total <= 1) return 0.0;
+    final maxStart = 0.9;
+    return (index / total) * maxStart;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Butterfly Gallery'),
@@ -105,20 +122,19 @@ class _HomePageState extends State<HomePage>
         ),
         child: Column(
           children: [
-            SizedBox(height: 20), // Added space to lower the search bar
+            SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.all(16),
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(
-                    0.8,
-                  ), // Subtle background without blur
+                  color: Colors.white.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: 'Search by science, origin, or details',
+                    labelText:
+                        'Search by common name, science, origin, family, or details',
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.search, color: Colors.teal),
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -141,24 +157,25 @@ class _HomePageState extends State<HomePage>
                     ),
                     itemCount: _filteredButterflies.length,
                     itemBuilder: (context, index) {
-                      if (index >= _filteredButterflies.length)
-                        return SizedBox.shrink();
+                      final butterfly = _filteredButterflies[index];
+
+                      // compute a safe interval start for this tile
+                      final start = _staggerStartForIndex(
+                        index,
+                        _filteredButterflies.length,
+                      );
                       final delayedAnimation =
                           Tween<double>(begin: 0.0, end: 1.0).animate(
                             CurvedAnimation(
                               parent: _controller,
                               curve: Interval(
-                                (index /
-                                        (_filteredButterflies.isEmpty
-                                            ? 1
-                                            : _filteredButterflies.length))
-                                    .clamp(0.0, 1.0),
+                                start.clamp(0.0, 1.0),
                                 1.0,
                                 curve: Curves.easeInOut,
                               ),
                             ),
                           );
-                      final butterfly = _filteredButterflies[index];
+
                       return FadeTransition(
                         opacity: delayedAnimation,
                         child: ScaleTransition(
@@ -203,9 +220,9 @@ class _HomePageState extends State<HomePage>
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text(butterfly.science),
+                                  title: Text(butterfly.commonName),
                                   content: Text(
-                                    '${butterfly.origin}\n$detailsPreview',
+                                    '${butterfly.family}\n${butterfly.origin}\nIndividuals: ${butterfly.numberOfIndividuals}\n$detailsPreview',
                                   ),
                                   actions: [
                                     TextButton(
@@ -221,20 +238,14 @@ class _HomePageState extends State<HomePage>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              clipBehavior: Clip
-                                  .antiAlias, // ensures content respects rounded corners
                               child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    20,
-                                  ), // moved here
+                                  borderRadius: BorderRadius.circular(20),
                                   gradient: LinearGradient(
                                     colors: [
                                       Colors.teal.withOpacity(0.1),
                                       Colors.blue.withOpacity(0.1),
                                     ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
                                   ),
                                 ),
                                 child: Column(
@@ -260,7 +271,7 @@ class _HomePageState extends State<HomePage>
                                     Padding(
                                       padding: EdgeInsets.all(8),
                                       child: Text(
-                                        butterfly.science,
+                                        butterfly.commonName,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.teal,
@@ -268,8 +279,15 @@ class _HomePageState extends State<HomePage>
                                       ),
                                     ),
                                     Text(
-                                      butterfly.origin,
+                                      butterfly.family,
                                       style: TextStyle(color: Colors.blueGrey),
+                                    ),
+                                    Text(
+                                      'Individuals: ${butterfly.numberOfIndividuals}',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -340,7 +358,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    widget.butterfly.science,
+                    widget.butterfly.commonName,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -348,8 +366,24 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   Text(
+                    widget.butterfly.science,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.teal,
+                    ),
+                  ),
+                  Text(
+                    'Family: ${widget.butterfly.family}',
+                    style: TextStyle(fontSize: 18, color: Colors.blueGrey),
+                  ),
+                  Text(
                     'Origin: ${widget.butterfly.origin}',
                     style: TextStyle(fontSize: 18, color: Colors.blueGrey),
+                  ),
+                  Text(
+                    'Number of Individuals: ${widget.butterfly.numberOfIndividuals}',
+                    style: TextStyle(fontSize: 16, color: Colors.blueGrey),
                   ),
                   Padding(
                     padding: EdgeInsets.all(16),

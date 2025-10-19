@@ -1,17 +1,35 @@
 // lib/models/butterfly.dart
 class Butterfly {
-  final int id; // Unique identifier
-  final String
-  imagePath; // Path to the photo, e.g., 'assets/images/butterfly_1.jpg'
-  final String details; // Description or other details
-  final String science; //scientific name
-  final String origin; // origin name
+  final int id;
+  final String commonName;
+  final String science;
+  final String origin;
+  final String imagePath;
+  final String details;
+  final String family;
+  final int numberOfIndividuals;
 
   Butterfly({
     required this.id,
-    required this.imagePath,
-    required this.details,
+    required this.commonName,
     required this.science,
     required this.origin,
+    required this.imagePath,
+    required this.details,
+    required this.family,
+    required this.numberOfIndividuals,
   });
+
+  factory Butterfly.fromJson(Map<String, dynamic> json) {
+    return Butterfly(
+      id: json['id'],
+      commonName: json['commonName'],
+      science: json['science'],
+      origin: json['origin'],
+      imagePath: json['imagePath'],
+      details: json['details'],
+      family: json['family'],
+      numberOfIndividuals: json['numberOfIndividuals'],
+    );
+  }
 }
