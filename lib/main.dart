@@ -7,9 +7,12 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key}); // Added const constructor and key
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Modern Butterfly App',
       theme: ThemeData(
         primarySwatch: Colors.teal,
@@ -25,42 +28,35 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomePage(),
+      home: const HomePage(), // added const
     );
   }
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  List<Butterfly> _butterflies = [];
-  List<Butterfly> _filteredButterflies = [];
+  late List<Butterfly> _butterflies;
+  late List<Butterfly> _filteredButterflies;
   String _searchQuery = '';
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
     );
-    _loadButterflies();
-  }
-
-  Future<void> _loadButterflies() async {
-    final butterflies = await getButterflies();
-    setState(() {
-      _butterflies = butterflies;
-      _filteredButterflies = List.from(_butterflies);
-      _isLoading = false;
-      _startStaggeredAnimation();
-    });
+    _butterflies = getButterflies(); // Load data
+    _filteredButterflies = List.from(_butterflies);
+    _startStaggeredAnimation();
   }
 
   void _startStaggeredAnimation() {
@@ -79,9 +75,7 @@ class _HomePageState extends State<HomePage>
             butterfly.family.toLowerCase().contains(_searchQuery) ||
             butterfly.id.toString().contains(_searchQuery);
       }).toList();
-      if (_filteredButterflies.isNotEmpty) {
-        _startStaggeredAnimation();
-      }
+      _startStaggeredAnimation();
     });
   }
 
@@ -91,21 +85,11 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  double _staggerStartForIndex(int index, int total) {
-    // return a start time for staggered animation in [0.0, 0.9]
-    if (total <= 1) return 0.0;
-    final maxStart = 0.9;
-    return (index / total) * maxStart;
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Butterfly Gallery'),
+        title: const Text('Butterfly Gallery'),
         backgroundColor: Colors.teal,
         elevation: 0,
       ),
@@ -122,17 +106,17 @@ class _HomePageState extends State<HomePage>
         ),
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText:
                         'Search by common name, science, origin, family, or details',
                     border: InputBorder.none,
@@ -148,28 +132,27 @@ class _HomePageState extends State<HomePage>
                 animation: _controller,
                 builder: (context, child) {
                   return GridView.builder(
-                    padding: EdgeInsets.all(16),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.8,
-                    ),
+                    padding: const EdgeInsets.all(16),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.8,
+                        ),
                     itemCount: _filteredButterflies.length,
                     itemBuilder: (context, index) {
                       final butterfly = _filteredButterflies[index];
-
-                      // compute a safe interval start for this tile
-                      final start = _staggerStartForIndex(
-                        index,
-                        _filteredButterflies.length,
-                      );
                       final delayedAnimation =
                           Tween<double>(begin: 0.0, end: 1.0).animate(
                             CurvedAnimation(
                               parent: _controller,
                               curve: Interval(
-                                start.clamp(0.0, 1.0),
+                                (index /
+                                        (_filteredButterflies.isEmpty
+                                            ? 1
+                                            : _filteredButterflies.length))
+                                    .clamp(0.0, 1.0),
                                 1.0,
                                 curve: Curves.easeInOut,
                               ),
@@ -185,19 +168,10 @@ class _HomePageState extends State<HomePage>
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                      ) => DetailsPage(butterfly: butterfly),
+                                  pageBuilder: (context, animation, _) =>
+                                      DetailsPage(butterfly: butterfly),
                                   transitionsBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                        child,
-                                      ) {
+                                      (context, animation, _, child) {
                                         return FadeTransition(
                                           opacity: animation,
                                           child: ScaleTransition(
@@ -222,12 +196,12 @@ class _HomePageState extends State<HomePage>
                                 builder: (context) => AlertDialog(
                                   title: Text(butterfly.commonName),
                                   content: Text(
-                                    '${butterfly.family}\n${butterfly.origin}\nIndividuals: ${butterfly.numberOfIndividuals}\n$detailsPreview',
+                                    '${butterfly.family}\n${butterfly.origin}\nIndividuals: ${butterfly.numberOfIndividuals}\n\n$detailsPreview',
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
-                                      child: Text('Close'),
+                                      child: const Text('Close'),
                                     ),
                                   ],
                                 ),
@@ -240,7 +214,9 @@ class _HomePageState extends State<HomePage>
                               ),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ), // ✅ Correct place for border radius
                                   gradient: LinearGradient(
                                     colors: [
                                       Colors.teal.withOpacity(0.1),
@@ -262,17 +238,17 @@ class _HomePageState extends State<HomePage>
                                                 Container(
                                                   height: 120,
                                                   color: Colors.grey[300],
-                                                  child: Center(
+                                                  child: const Center(
                                                     child: Text('Image Error'),
                                                   ),
                                                 ),
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       child: Text(
                                         butterfly.commonName,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.teal,
                                         ),
@@ -280,11 +256,13 @@ class _HomePageState extends State<HomePage>
                                     ),
                                     Text(
                                       butterfly.family,
-                                      style: TextStyle(color: Colors.blueGrey),
+                                      style: const TextStyle(
+                                        color: Colors.blueGrey,
+                                      ),
                                     ),
                                     Text(
                                       'Individuals: ${butterfly.numberOfIndividuals}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.blueGrey,
                                         fontSize: 12,
                                       ),
@@ -308,101 +286,91 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-class DetailsPage extends StatefulWidget {
+class DetailsPage extends StatelessWidget {
   final Butterfly butterfly;
-  DetailsPage({required this.butterfly});
+  const DetailsPage({super.key, required this.butterfly});
 
-  @override
-  _DetailsPageState createState() => _DetailsPageState();
-}
-
-class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: UniqueKey(),
-      direction: DismissDirection.down,
-      onDismissed: (_) => Navigator.pop(context),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Butterfly Details'),
-          backgroundColor: Colors.teal,
-          elevation: 0,
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.teal.withOpacity(0.1),
-                Colors.blueGrey.withOpacity(0.1),
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Butterfly Details'),
+        backgroundColor: Colors.teal,
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.teal.withOpacity(0.1),
+              Colors.blueGrey.withOpacity(0.1),
+            ],
           ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Hero(
-                    tag: 'butterfly-${widget.butterfly.id}',
-                    child: Image.asset(
-                      widget.butterfly.imagePath,
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Hero(
+                  tag: 'butterfly-${butterfly.id}',
+                  child: Image.asset(
+                    butterfly.imagePath,
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
                       height: 250,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 250,
-                        color: Colors.grey[300],
-                        child: Center(child: Text('Image Error')),
-                      ),
+                      color: Colors.grey[300],
+                      child: const Center(child: Text('Image Error')),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    widget.butterfly.commonName,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal,
-                    ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  butterfly.commonName,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
                   ),
-                  Text(
-                    widget.butterfly.science,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.teal,
-                    ),
+                ),
+                Text(
+                  butterfly.science,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.teal,
                   ),
-                  Text(
-                    'Family: ${widget.butterfly.family}',
-                    style: TextStyle(fontSize: 18, color: Colors.blueGrey),
+                ),
+                Text(
+                  'Family: ${butterfly.family}',
+                  style: const TextStyle(fontSize: 18, color: Colors.blueGrey),
+                ),
+                Text(
+                  'Origin: ${butterfly.origin}',
+                  style: const TextStyle(fontSize: 18, color: Colors.blueGrey),
+                ),
+                Text(
+                  'Number of Individuals: ${butterfly.numberOfIndividuals}',
+                  style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    butterfly.details,
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  Text(
-                    'Origin: ${widget.butterfly.origin}',
-                    style: TextStyle(fontSize: 18, color: Colors.blueGrey),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(150, 50),
+                    backgroundColor: Colors.teal.withOpacity(0.3),
                   ),
-                  Text(
-                    'Number of Individuals: ${widget.butterfly.numberOfIndividuals}',
-                    style: TextStyle(fontSize: 16, color: Colors.blueGrey),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      widget.butterfly.details,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Back to Gallery'),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(150, 50),
-                      backgroundColor: Colors.teal.withOpacity(0.3),
-                    ),
-                  ),
-                ],
-              ),
+                  child: const Text('Back to Gallery'),
+                ),
+              ],
             ),
           ),
         ),
