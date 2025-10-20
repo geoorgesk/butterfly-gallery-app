@@ -5,108 +5,521 @@ List<Butterfly> getButterflies() {
   return [
     Butterfly(
       id: 1,
-      commonName: "Monarch Butterfly", // New: Common name
-      science: "Danaus plexippus", // Scientific name
-      origin: "North America", // Origin
+      commonName: "Monarch butterfly",
+      science: "Danaus plexippus",
+      origin:
+          "North America (migratory; also observed worldwide in some regions)",
       imagePath: 'assets/images/butterfly_1.jpg',
       details:
-          'This is Butterfly 1: A beautiful Monarch with orange wings and black veins.',
-      family: "Nymphalidae", // New: Family
-      numberOfIndividuals: 1000000, // New: Estimated population
+          'Monarchs are famous for their long-distance migration and striking orange-and-black wings. Caterpillars feed on milkweed and accumulate toxins that make adults unpalatable to predators.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 3,
     ),
     Butterfly(
       id: 2,
-      commonName: "Blue Morpho", // New: Common name
-      science: "Morpho helenor", // Scientific name
-      origin: "Central and South America", // Origin
+      commonName: "Lemon pansy",
+      science: "Junonia lemonias",
+      origin: "South Asia (India, Sri Lanka, Southeast Asia)",
       imagePath: 'assets/images/butterfly_2.jpg',
       details:
-          'This is Butterfly 2: A vibrant Blue Morpho known for its iridescent blue color.',
-      family: "Nymphalidae", // New: Family
-      numberOfIndividuals: 500000, // New: Estimated population
+          'Lemon Pansy has brown wings with eye spots and pale yellow markings; it frequents gardens and open areas. Larvae feed on plants such as Acanthaceae and Scrophulariaceae species.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 9,
     ),
     Butterfly(
       id: 3,
-      commonName: "Swallowtail", // New: Common name
-      science: "Papilio machaon", // Scientific name
-      origin: "Europe and Asia", // Origin
+      commonName: "Common crow",
+      science: "Euploea core",
+      origin: "South & Southeast Asia, Australasia",
       imagePath: 'assets/images/butterfly_3.jpg',
       details:
-          'This is Butterfly 3: A common Swallowtail with striking yellow and black patterns.',
-      family: "Papilionidae", // New: Family
-      numberOfIndividuals: 2000000, // New: Estimated population
+          'A dark, glossy butterfly often seen in groups; Common Crows feed on nectar and are distasteful to predators due to toxins from larval host plants. They commonly visit gardens and forest edges.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 38,
     ),
     Butterfly(
       id: 4,
-      commonName: "Painted Lady", // New: Common name
-      science: "Vanessa cardui", // Scientific name
-      origin: "Worldwide", // Origin
+      commonName: "Glassy tiger",
+      science: "Parantica aglea",
+      origin: "South & Southeast Asia",
       imagePath: 'assets/images/butterfly_4.jpg',
       details:
-          'This is Butterfly 4: A delicate Painted Lady with migratory habits.',
-      family: "Nymphalidae", // New: Family
-      numberOfIndividuals: 5000000, // New: Estimated population
+          'Glassy Tiger features translucent wings with bluish veins and delicate markings. It is often found in hill forests and open shady areas; larvae feed on plants of the Apocynaceae family.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 2,
     ),
     Butterfly(
       id: 5,
-      commonName:
-          "Postman Butterfly", // New: Common name (example for Heliconius melpomene)
-      science: "Heliconius melpomene", // Scientific name
-      origin: "South America", // Origin
+      commonName: "Chocolate pansy",
+      science: "Junonia iphita",
+      origin: "South & Southeast Asia",
       imagePath: 'assets/images/butterfly_5.jpg',
       details:
-          'This is Butterfly 5: A colorful species with red and black wings.',
-      family: "Nymphalidae", // New: Family
-      numberOfIndividuals: 100000, // New: Estimated population
+          'Chocolate Pansy has warm brown wings and distinctive eye-spots; it basks and mud-puddles frequently. Larvae feed on plants in the Acanthaceae family and it is a common garden visitor.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 4,
     ),
     Butterfly(
       id: 6,
-      commonName: "Eastern Tiger Swallowtail", // New: Common name
-      science: "Papilio glaucus", // Scientific name
-      origin: "North America", // Origin
+      commonName: "Common bush brown",
+      science: "Mycalesis perseus",
+      origin: "South & Southeast Asia",
       imagePath: 'assets/images/butterfly_6.jpg',
       details:
-          'This is Butterfly 6: A large butterfly with yellow and black markings.',
-      family: "Papilionidae", // New: Family
-      numberOfIndividuals: 1500000, // New: Estimated population
+          'A small, brown butterfly with eye-spots on the wings used for predator distraction. Prefers grassy and bushy habitats; larvae feed on grasses and sedges.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 5,
     ),
-    // Add the remaining butterflies (IDs 7-45) here with the same structure
-    // Example for ID 7:
     Butterfly(
       id: 7,
-      commonName: "Common Buckeye", // Replace with actual common name
-      science: "Junonia coenia", // Replace with actual scientific name
-      origin: "North America", // Replace with actual origin
+      commonName: "Plain tiger",
+      science: "Danaus chrysippus",
+      origin: "Africa, Asia and Australia",
       imagePath: 'assets/images/butterfly_7.jpg',
       details:
-          'This is Butterfly 7: Description here.', // Replace with actual details
-      family: "Nymphalidae", // Replace with actual family
-      numberOfIndividuals: 200000, // Replace with actual estimated population
+          'Plain Tiger, also called African Monarch in some regions, is an orange-and-black toxic species that uses milkweed relatives as larval hosts. It is bold and commonly seen in open areas and gardens.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 8,
     ),
-    // Continue for IDs 8-45...
-    // For ID 46:
+    Butterfly(
+      id: 8,
+      commonName: "Common five ring",
+      science: "Ypthima baldus",
+      origin: "South & Southeast Asia",
+      imagePath: 'assets/images/butterfly_8.jpg',
+      details:
+          'A small satyrine with several eye-rings on the hindwing (hence the name "five ring"). Frequently found in grasslands; active at low heights and often rests with wings closed.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 9,
+      commonName: "Dark blue tiger",
+      science: "Tirumala septentrionis",
+      origin: "South & Southeast Asia",
+      imagePath: 'assets/images/butterfly_9.jpg',
+      details:
+          'Dark Blue Tiger is a slender butterfly with deep blue streaks on black wings; it participates in seasonal movements and visits flowers for nectar. Larvae feed on plants in the Asclepiadaceae family.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 10,
+      commonName: "Common tiger",
+      science: "Danaus genutia",
+      origin: "India, Southeast Asia, Australasia",
+      imagePath: 'assets/images/butterfly_10.jpg',
+      details:
+          'Very similar to the Plain Tiger but with subtle pattern differences; Common Tiger is brightly colored and unpalatable due to chemical defenses from host plants. Common in open habitats and gardens.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 2,
+    ),
+    Butterfly(
+      id: 11,
+      commonName: "Great egg fly",
+      science: "Hypolimnas bolina",
+      origin: "Tropical Asia, Australia, Pacific islands",
+      imagePath: 'assets/images/butterfly_11.jpg',
+      details:
+          'Also called the Blue Moon or Common Eggfly (males with glossy blue/purple patches). Females show polymorphism; typically found in open sunny habitats and gardens.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 4,
+    ),
+    Butterfly(
+      id: 12,
+      commonName: "Common evening brown",
+      science: "Melanitis leda",
+      origin: "Africa, South & Southeast Asia, Australia",
+      imagePath: 'assets/images/butterfly_12.jpg',
+      details:
+          'A crepuscular species that flies more actively at dusk; wings are cryptically colored to resemble dead leaves. Lives in forest edges and grasslands; larvae feed on various grasses.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 6,
+    ),
+    Butterfly(
+      id: 13,
+      commonName: "Malabar tree nymph",
+      science: "Idea malabarica",
+      origin: "Western Ghats, India (endemic)",
+      imagePath: 'assets/images/butterfly_13.jpg',
+      details:
+          'Malabar Tree Nymph is a large, slow-flying white-and-black butterfly found in the Western Ghats. It is a protected and locally uncommon species; adults sequester toxins making them distasteful.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 2,
+    ),
+    Butterfly(
+      id: 14,
+      commonName: "Baronet",
+      science: "Symphaedra nais",
+      origin: "Indian subcontinent and Southeast Asia",
+      imagePath: 'assets/images/butterfly_14.jpg',
+      details:
+          'Baronet is orange-brown with distinct black markings and a characteristic wing shape. Often found in forested areas; larvae feed on trees and shrubs of certain families.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 15,
+      commonName: "Blue tiger",
+      science: "Tirumala limniace",
+      origin: "South & Southeast Asia",
+      imagePath: 'assets/images/butterfly_15.jpg',
+      details:
+          'Blue Tiger is a graceful black-and-blue patterned butterfly that sometimes forms migratory aggregations. Feeds on nectar and is attracted to flowers and damp patches.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 7,
+    ),
+    Butterfly(
+      id: 16,
+      commonName: "Medus brown butterfly",
+      science: "Orsotriaena medus",
+      origin: "South & Southeast Asia, Australasia",
+      imagePath: 'assets/images/butterfly_16.jpg',
+      details:
+          'A small brown species with subtle eye-spots used to deter predators. Prefers shaded forest floors and edges; larvae usually feed on grasses.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 17,
+      commonName: "Rustic butterfly",
+      science: "Cupha erymanthis",
+      origin: "South and Southeast Asia",
+      imagePath: 'assets/images/butterfly_17.jpg',
+      details:
+          'A medium-sized orange and brown butterfly found in forest clearings and gardens. The Rustic is active in sunlight and often visits flowers. Caterpillars feed on species of Flacourtia.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 3,
+    ),
+    Butterfly(
+      id: 18,
+      commonName: "Common brown",
+      science: "Heteronympha merope",
+      origin: "Australia",
+      imagePath: 'assets/images/butterfly_18.jpg',
+      details:
+          'Common Brown is an Australian satyrine butterfly. Males and females differ markedly in coloration. It is often seen in open woodland and grasslands; caterpillars feed on grasses.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 19,
+      commonName: "Commander butterfly",
+      science: "Moduza procris",
+      origin: "India and Southeast Asia",
+      imagePath: 'assets/images/butterfly_19.jpg',
+      details:
+          'Commander is easily recognized by its striking orange wings with white bands. It rests with wings flat and is territorial. Larvae feed on plants like Ailanthus and other Simaroubaceae.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 20,
+      commonName: "Variegated fritillary",
+      science: "Euptoieta claudia",
+      origin: "North and South America",
+      imagePath: 'assets/images/butterfly_20.jpg',
+      details:
+          'Variegated Fritillary has bright orange wings with dark spots and bands. It inhabits open fields and meadows. The species is migratory and feeds on a wide range of host plants including passionflowers.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 21,
+      commonName: "Common sailer",
+      science: "Neptis hylas",
+      origin: "Asia and Africa",
+      imagePath: 'assets/images/butterfly_21.jpg',
+      details:
+          'Common Sailer is known for its distinctive gliding flight pattern. It has black wings crossed by white bands and is found along forest edges. The larvae feed on plants of the Acanthaceae family.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 22,
+      commonName: "Blue admiral",
+      science: "Kaniska canace",
+      origin: "Asia, from India to Japan",
+      imagePath: 'assets/images/butterfly_22.jpg',
+      details:
+          'Blue Admiral is a robust butterfly with dark blue iridescent wings. It often rests on tree trunks and mud puddles. The caterpillars feed on plants such as Elatostema and Boehmeria.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 2,
+    ),
+    Butterfly(
+      id: 23,
+      commonName: "Common leopard",
+      science: "Phalanta phalantha",
+      origin: "Africa and Asia",
+      imagePath: 'assets/images/butterfly_23.jpg',
+      details:
+          'Common Leopard is an orange butterfly with black spots resembling a leopard’s pattern. Found in sunny clearings and gardens, it feeds on nectar and uses Flacourtia species as larval hosts.',
+      family: "Nymphalidae",
+      numberOfIndividuals: 2,
+    ),
+    Butterfly(
+      id: 24,
+      commonName: "Common Mormon",
+      science: "Papilio polytes",
+      origin: "South and Southeast Asia",
+      imagePath: 'assets/images/butterfly_24.jpg',
+      details:
+          'A widespread swallowtail that shows female polymorphism mimicking toxic species. Common in gardens and open forests; larvae feed on citrus plants (Rutaceae).',
+      family: "Papilionidae",
+      numberOfIndividuals: 22,
+    ),
+    Butterfly(
+      id: 25,
+      commonName: "Southern birdwing",
+      science: "Troides minos",
+      origin: "Western Ghats, India (endemic)",
+      imagePath: 'assets/images/butterfly_25.jpg',
+      details:
+          'India’s largest butterfly, the Southern Birdwing displays brilliant yellow and black wings. It inhabits forested hills and valleys; larvae feed on Aristolochia species. It is a protected species.',
+      family: "Papilionidae",
+      numberOfIndividuals: 6,
+    ),
+    Butterfly(
+      id: 26,
+      commonName: "Lime butterfly",
+      science: "Papilio demoleus",
+      origin: "Asia, Australia, and Middle East",
+      imagePath: 'assets/images/butterfly_26.jpg',
+      details:
+          'Lime Butterfly, also known as the Lemon Butterfly, is a fast flyer often seen around citrus plants. Its caterpillars feed on citrus leaves, sometimes making it a minor agricultural pest.',
+      family: "Papilionidae",
+      numberOfIndividuals: 7,
+    ),
+    Butterfly(
+      id: 27,
+      commonName: "Common mime",
+      science: "Papilio clytia",
+      origin: "India and Southeast Asia",
+      imagePath: 'assets/images/butterfly_27.jpg',
+      details:
+          'Common Mime is a black-and-white swallowtail that mimics unpalatable species like Common Crow. It prefers forests and wooded areas; larvae feed on trees of Lauraceae family.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 28,
+      commonName: "Crimson rose",
+      science: "Pachliopta hector",
+      origin: "South India and Sri Lanka",
+      imagePath: 'assets/images/butterfly_28.jpg',
+      details:
+          'Crimson Rose is a striking black butterfly with crimson hindwing patches and white spots. It is a slow flier and feeds on nectar-rich flowers. Caterpillars feed on Aristolochia plants and accumulate toxins.',
+      family: "Papilionidae",
+      numberOfIndividuals: 7,
+    ),
+    Butterfly(
+      id: 29,
+      commonName: "Malabar banded peacock",
+      science: "Papilio buddha",
+      origin: "Western Ghats, India (endemic)",
+      imagePath: 'assets/images/butterfly_29.jpg',
+      details:
+          'An iridescent green swallowtail found only in the Western Ghats. It is a fast flier inhabiting evergreen and semi-evergreen forests. Larvae feed on trees of the Rutaceae family.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 30,
+      commonName: "Spicebush swallowtail",
+      science: "Papilio troilus",
+      origin: "North America",
+      imagePath: 'assets/images/butterfly_30.jpg',
+      details:
+          'A large, dark swallowtail with blue or green hindwing patches. Found in woodlands and gardens. Larvae feed on spicebush and sassafras plants.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 31,
+      commonName: "Blue Mormon",
+      science: "Papilio polymnestor",
+      origin: "India and Sri Lanka",
+      imagePath: 'assets/images/butterfly_31.jpg',
+      details:
+          'The largest butterfly in southern India after the birdwing. It is glossy blue and black and often found in gardens. Larvae feed on citrus species. It is the state butterfly of Maharashtra, India.',
+      family: "Papilionidae",
+      numberOfIndividuals: 7,
+    ),
+    Butterfly(
+      id: 32,
+      commonName: "Red Helen",
+      science: "Papilio helenus",
+      origin: "South and Southeast Asia",
+      imagePath: 'assets/images/butterfly_32.jpg',
+      details:
+          'A large black swallowtail with red and white markings. It prefers forest habitats and shaded valleys; caterpillars feed on citrus and related plants.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 33,
+      commonName: "Tailed jay",
+      science: "Graphium agamemnon",
+      origin: "South & Southeast Asia, Australia",
+      imagePath: 'assets/images/butterfly_33.jpg',
+      details:
+          'Tailed Jay is a bright green and black swallowtail that remains active even on cloudy days. It frequents gardens and forest edges; larvae feed on custard apple and other Annonaceae plants.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 34,
+      commonName: "Common jay",
+      science: "Graphium doson",
+      origin: "South & Southeast Asia, Australasia",
+      imagePath: 'assets/images/butterfly_34.jpg',
+      details:
+          'Common Jay is a fast-flying swallowtail with bright greenish spots on a dark background; it frequents forest edges and gardens. Larvae feed on members of the Annonaceae family.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 35,
+      commonName: "Black swallowtail",
+      science: "Papilio polyxenes",
+      origin: "North America",
+      imagePath: 'assets/images/butterfly_35.jpg',
+      details:
+          'Black Swallowtail is a striking swallowtail with black wings and yellow spots; caterpillars feed on Apiaceae (carrot family) and can be seen on parsley and dill. Adults are strong fliers and visit flowers for nectar.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 36,
+      commonName: "Common yellow swallowtail",
+      science: "Papilio machaon",
+      origin: "Europe, Asia, and North America (widespread subspecies)",
+      imagePath: 'assets/images/butterfly_36.jpg',
+      details:
+          'Common Yellow Swallowtail (often called the Old World Swallowtail) has pale yellow wings with black veins and tail-like hindwing extensions. Larvae feed on plants in the Apiaceae and Rutaceae families.',
+      family: "Papilionidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 37,
+      commonName: "Common emigrant",
+      science: "Catopsilia pomona",
+      origin: "South & Southeast Asia, Australasia",
+      imagePath: 'assets/images/butterfly_37.jpg',
+      details:
+          'Common Emigrant is a pale yellow butterfly often seen in migratory groups; it visits open areas and gardens. Larvae typically feed on senna and cassia species (Fabaceae).',
+      family: "Pieridae",
+      numberOfIndividuals: 11,
+    ),
+    Butterfly(
+      id: 38,
+      commonName: "Psyche butterfly",
+      science: "Leptosia nina",
+      origin: "South & Southeast Asia",
+      imagePath: 'assets/images/butterfly_38.jpg',
+      details:
+          'Psyche is a delicate, small white butterfly with slender wings and subtle markings. It favours shady gardens and forest edges. Larvae feed on plants from the Capparaceae family.',
+      family: "Pieridae",
+      numberOfIndividuals: 3,
+    ),
+    Butterfly(
+      id: 39,
+      commonName: "Common jezebel",
+      science: "Delias eucharis",
+      origin: "Indian subcontinent and Southeast Asia",
+      imagePath: 'assets/images/butterfly_39.jpg',
+      details:
+          'Common Jezebel is brightly marked with white, yellow and red patches; it is unpalatable to predators and often seen fluttering around flowers. Larvae feed on mistletoe and other Loranthaceae species.',
+      family: "Pieridae",
+      numberOfIndividuals: 6,
+    ),
+    Butterfly(
+      id: 40,
+      commonName: "Cabbage white",
+      science: "Pieris rapae",
+      origin: "Native to Europe; now widespread worldwide",
+      imagePath: 'assets/images/butterfly_40.jpg',
+      details:
+          'Cabbage White is a familiar small white butterfly whose larvae feed on brassicas (cabbage family), making it a common garden species. Adults are active and frequent flower patches.',
+      family: "Pieridae",
+      numberOfIndividuals: 14,
+    ),
+    Butterfly(
+      id: 41,
+      commonName: "Common grass yellow",
+      science: "Eurema hecabe",
+      origin: "Africa, Asia and Australia",
+      imagePath: 'assets/images/butterfly_41.jpg',
+      details:
+          'Common Grass Yellow is a small, bright yellow butterfly often seen in open grassy places. It flutters close to the ground and lays eggs on leguminous host plants used by larvae.',
+      family: "Pieridae",
+      numberOfIndividuals: 17,
+    ),
+    Butterfly(
+      id: 42,
+      commonName: "Spotless grass yellow",
+      science: "Eurema laeta",
+      origin: "South & Southeast Asia",
+      imagePath: 'assets/images/butterfly_42.jpg',
+      details:
+          'Spotless Grass Yellow is similar to other Eurema species but lacks or has reduced wing spots; it frequents fields and gardens. Larvae feed on various legumes and low shrubs.',
+      family: "Pieridae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 43,
+      commonName: "Wood white",
+      science: "Leptidea sinapis",
+      origin: "Europe and parts of Asia",
+      imagePath: 'assets/images/butterfly_43.jpg',
+      details:
+          'Wood White is a delicate pale butterfly often found in woodland clearings and hedgerows. It has a slow, fluttering flight; caterpillars feed on vetches and other legumes.',
+      family: "Pieridae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 44,
+      commonName: "Red pierrot butterfly",
+      science: "Talicada nyseus",
+      origin: "Indian subcontinent and Southeast Asia",
+      imagePath: 'assets/images/butterfly_44.jpg',
+      details:
+          'Red Pierrot is a small lycaenid with striking black-and-white markings and red spots near the hindwing; commonly found on rocky streamsides and scrub. Larvae feed on plants of the Euphorbiaceae family.',
+      family: "Lycaenidae",
+      numberOfIndividuals: 1,
+    ),
+    Butterfly(
+      id: 45,
+      commonName: "Indian grizzled skipper",
+      science: "Spialia galba",
+      origin: "Indian subcontinent",
+      imagePath: 'assets/images/butterfly_45.jpg',
+      details:
+          'A small, fast-flying skipper with brown wings and pale spots; often found in dry open habitats. Larvae feed on grasses and low herbs; adults are rapid and close to the ground.',
+      family: "Hesperiidae",
+      numberOfIndividuals: 1,
+    ),
     Butterfly(
       id: 46,
-      commonName: "Buckeye Butterfly", // New: Common name
-      science: "Junonia coenia", // Scientific name
-      origin: "North America", // Origin
+      commonName: "Common lime",
+      science: "Citrus aurantifolia",
+      origin: "Southeast Asia (cultivated worldwide)",
       imagePath: 'assets/images/butterfly_46.jpg',
       details:
-          'This is Butterfly 46: A butterfly with eye-like spots for protection.',
-      family: "Nymphalidae", // New: Family
-      numberOfIndividuals: 500000, // New: Estimated population
+          'Note: this table row lists a plant (Common lime) and its botanical name. In this dataset we keep it as an entry to match the source table — consider replacing it with a butterfly species if unintended. Common lime is a citrus tree widely cultivated for its fruit and used as larval host by some butterfly species (e.g., Papilionidae).',
+      family: "Rutaceae",
+      numberOfIndividuals: 1,
     ),
     Butterfly(
       id: 47,
-      commonName: "Luna Moth", // New: Common name
-      science: "Actias luna", // Scientific name
-      origin: "North America", // Origin
+      commonName: "Common fruit piercing moth",
+      science: "Eudocima phalonia",
+      origin: "Tropical Asia, Africa, and Australia",
       imagePath: 'assets/images/butterfly_47.jpg',
       details:
-          'This is Butterfly 47: A rare species with unique patterns and vibrant colors.',
-      family: "Saturniidae", // New: Family
-      numberOfIndividuals: 10000, // New: Estimated population
+          'Common Fruit Piercing Moth is a large nocturnal moth that pierces ripe fruit to feed, sometimes considered a pest of orchards. Larvae feed on Menispermaceae plants; adults are strong fliers attracted to fermenting fruit.',
+      family: "Erebidae",
+      numberOfIndividuals: 1,
     ),
-    // Ensure all 47 entries are added. Copy-paste the structure and fill in real data.
   ];
 }
