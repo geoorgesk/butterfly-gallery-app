@@ -259,7 +259,7 @@ List<Butterfly> getButterflies() {
     ),
     Butterfly(
       id: 24,
-      commonName: "Common Mormon",
+      commonName: " ",
       science: "Papilio polytes",
       origin: "South and Southeast Asia",
       imagePath: 'assets/images/butterfly_24.jpg',

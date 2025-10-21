@@ -269,19 +269,7 @@ class DetailsPage extends StatelessWidget {
       onDismissed: (_) => Navigator.pop(context),
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(
-            'Details',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              color: Colors.teal[800],
-            ),
-          ),
-          centerTitle: true,
-        ),
+        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -327,6 +315,7 @@ class DetailsPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 30),
+                      // Common Name
                       Text(
                         butterfly.commonName,
                         style: TextStyle(
@@ -336,8 +325,10 @@ class DetailsPage extends StatelessWidget {
                           shadows: [Shadow(color: Colors.white, blurRadius: 3)],
                         ),
                         textAlign: TextAlign.center,
+                        softWrap: true,
                       ),
                       SizedBox(height: 10),
+                      // Scientific Name
                       Text(
                         butterfly.science,
                         style: TextStyle(
@@ -346,16 +337,18 @@ class DetailsPage extends StatelessWidget {
                           color: Colors.teal[700],
                         ),
                         textAlign: TextAlign.center,
+                        softWrap: true,
                       ),
                       SizedBox(height: 15),
+                      // Info rows
                       _buildInfoRow('Origin', butterfly.origin),
-                      _buildInfoRow('ID', butterfly.id.toString()),
                       _buildInfoRow('Family', butterfly.family),
                       _buildInfoRow(
                         'Individuals',
                         butterfly.numberOfIndividuals.toString(),
                       ),
                       SizedBox(height: 20),
+                      // Description
                       Container(
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -377,6 +370,7 @@ class DetailsPage extends StatelessWidget {
                             height: 1.5,
                           ),
                           textAlign: TextAlign.center,
+                          softWrap: true,
                         ),
                       ),
                       SizedBox(height: 30),
@@ -401,23 +395,33 @@ class DetailsPage extends StatelessWidget {
     );
   }
 
+  /// ✅ Fixed version of info row with proper text wrapping
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '$label: ',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.teal[800],
+          Flexible(
+            flex: 2,
+            child: Text(
+              '$label: ',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.teal[800],
+              ),
+              softWrap: true,
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(fontSize: 16, color: Colors.blueGrey[700]),
+          Flexible(
+            flex: 4,
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 16, color: Colors.blueGrey[700]),
+              softWrap: true, // ✅ text wraps to next line
+              overflow: TextOverflow.visible, // ✅ ensures full visibility
+            ),
           ),
         ],
       ),
