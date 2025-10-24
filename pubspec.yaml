@@ -58,9 +58,17 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+
   assets:
     - assets/images/
     - assets/icons/app_icon.png
+
+flutter_launcher_icons:
+  android: true # Generate for Android
+  ios: true # Generate for iOS
+  image_path: "assets/icons/app_icon.png" # Path to your icon
+  min_sdk_android: 21 # Optional: Minimum Android SDK
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
