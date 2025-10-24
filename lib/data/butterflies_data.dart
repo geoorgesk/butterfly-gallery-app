@@ -506,7 +506,7 @@ List<Butterfly> getButterflies() {
       origin: "Southeast Asia (cultivated worldwide)",
       imagePath: 'assets/images/butterfly_46.jpg',
       details:
-          'Note: this table row lists a plant (Common lime) and its botanical name. In this dataset we keep it as an entry to match the source table — consider replacing it with a butterfly species if unintended. Common lime is a citrus tree widely cultivated for its fruit and used as larval host by some butterfly species (e.g., Papilionidae).',
+          ' Common lime is a citrus tree widely cultivated for its fruit and used as larval host by some butterfly species (e.g., Papilionidae).',
       family: "Rutaceae",
       numberOfIndividuals: 1,
     ),
