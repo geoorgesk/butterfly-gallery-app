@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui; // For glassmorphism blur
+import 'dart:ui' as ui;
 import 'data/butterflies_data.dart';
 import 'models/butterfly.dart';
 
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -43,6 +44,8 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   List<Butterfly> _butterflies = [];
+  Map<String, List<Butterfly>> _butterfliesByFamily = {};
+  List<String> _families = [];
 
   @override
   void initState() {
@@ -51,9 +54,26 @@ class _HomePageState extends State<HomePage>
       vsync: this,
       duration: Duration(milliseconds: 1000),
     );
-    _butterflies = getButterflies(); // Load all butterflies
-    print('Loaded ${_butterflies.length} butterflies'); // Debug: Check count
-    _startStaggeredAnimation();
+
+    // load butterflies (synchronous in your original code)
+    _butterflies = getButterflies();
+    _groupByFamily();
+    // start animation if we have content
+    if (_families.isNotEmpty) {
+      _startStaggeredAnimation();
+    }
+  }
+
+  void _groupByFamily() {
+    _butterfliesByFamily = {};
+    for (var butterfly in _butterflies) {
+      final family = (butterfly.family ?? 'Unknown'); // defensive
+      if (!_butterfliesByFamily.containsKey(family)) {
+        _butterfliesByFamily[family] = [];
+      }
+      _butterfliesByFamily[family]!.add(butterfly);
+    }
+    _families = _butterfliesByFamily.keys.toList();
   }
 
   void _startStaggeredAnimation() {
@@ -69,186 +89,271 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Butterfly Gallery',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.teal[800],
-            shadows: [
-              Shadow(color: Colors.white.withOpacity(0.5), blurRadius: 5),
-            ],
+    // If no families, show an empty / loading screen to avoid DefaultTabController error
+    if (_families.isEmpty) {
+      return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(
+            'Butterfly Gallery',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.teal[800],
+              shadows: [
+                Shadow(color: Colors.white.withOpacity(0.5), blurRadius: 5),
+              ],
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal[50]!, Colors.blueGrey[100]!, Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bug_report, size: 72, color: Colors.teal),
+                    SizedBox(height: 16),
+                    Text(
+                      'No butterflies available',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal[800],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Check your data source or add butterflies to the data file.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.blueGrey[700]),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.teal[50]!, Colors.blueGrey[100]!, Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      );
+    }
+
+    // When we have families, show tabbed UI
+    return DefaultTabController(
+      length: _families.length,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(
+            'Butterfly Gallery',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.teal[800],
+              shadows: [
+                Shadow(color: Colors.white.withOpacity(0.5), blurRadius: 5),
+              ],
+            ),
+          ),
+          centerTitle: true,
+          bottom: TabBar(
+            isScrollable: true,
+            indicatorColor: Colors.teal,
+            labelColor: Colors.teal[800],
+            unselectedLabelColor: Colors.blueGrey,
+            tabs: _families.map((family) => Tab(text: family)).toList(),
           ),
         ),
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            color: Colors.white.withOpacity(0.1),
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 100),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemCount: _butterflies.length, // Should be 47
-                  itemBuilder: (context, index) {
-                    if (index >= _butterflies.length)
-                      return SizedBox.shrink(); // Safety check
-                    final delayedAnimation = Tween<double>(begin: 0.0, end: 1.0)
-                        .animate(
-                          CurvedAnimation(
-                            parent: _controller,
-                            curve: Interval(
-                              (index / _butterflies.length).clamp(0.0, 1.0),
-                              1.0,
-                              curve: Curves.elasticOut,
-                            ),
-                          ),
-                        );
-                    final butterfly = _butterflies[index];
-                    return FadeTransition(
-                      opacity: delayedAnimation,
-                      child: ScaleTransition(
-                        scale: delayedAnimation,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) =>
-                                        DetailsPage(butterfly: butterfly),
-                                transitionsBuilder:
-                                    (
-                                      context,
-                                      animation,
-                                      secondaryAnimation,
-                                      child,
-                                    ) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: ScaleTransition(
-                                          scale: CurvedAnimation(
-                                            parent: animation,
-                                            curve: Curves.easeInOut,
-                                          ),
-                                          child: child,
-                                        ),
-                                      );
-                                    },
-                              ),
-                            );
-                          },
-                          child: Card(
-                            elevation: 12,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            shadowColor: Colors.teal.withOpacity(0.3),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.white.withOpacity(0.9),
-                                    Colors.teal.withOpacity(0.1),
-                                  ],
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal[50]!, Colors.blueGrey[100]!, Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              color: Colors.white.withOpacity(0.1),
+              child: TabBarView(
+                children: _families.map((family) {
+                  final familyButterflies = _butterfliesByFamily[family]!;
+                  return AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return GridView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 100,
+                        ),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 15,
+                          childAspectRatio: 0.75,
+                        ),
+                        itemCount: familyButterflies.length,
+                        itemBuilder: (context, index) {
+                          final delayedAnimation =
+                              Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                  parent: _controller,
+                                  curve: Interval(
+                                    (index / familyButterflies.length).clamp(
+                                      0.0,
+                                      1.0,
+                                    ),
+                                    1.0,
+                                    curve: Curves.elasticOut,
+                                  ),
                                 ),
-                                border: Border.all(
-                                  color: Colors.teal.withOpacity(0.2),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Hero(
-                                    tag: 'butterfly-${butterfly.id}',
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Image.asset(
-                                        butterfly.imagePath,
-                                        height: 100,
-                                        width: 100,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                Container(
-                                                  height: 100,
-                                                  width: 100,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[200],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.bug_report,
-                                                    color: Colors.teal,
-                                                    size: 40,
-                                                  ),
+                              );
+                          final butterfly = familyButterflies[index];
+                          return FadeTransition(
+                            opacity: delayedAnimation,
+                            child: ScaleTransition(
+                              scale: delayedAnimation,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder:
+                                          (
+                                            context,
+                                            animation,
+                                            secondaryAnimation,
+                                          ) =>
+                                              DetailsPage(butterfly: butterfly),
+                                      transitionsBuilder:
+                                          (
+                                            context,
+                                            animation,
+                                            secondaryAnimation,
+                                            child,
+                                          ) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: ScaleTransition(
+                                                scale: CurvedAnimation(
+                                                  parent: animation,
+                                                  curve: Curves.easeInOut,
                                                 ),
+                                                child: child,
+                                              ),
+                                            );
+                                          },
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  elevation: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  shadowColor: Colors.teal.withOpacity(0.3),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withOpacity(0.9),
+                                          Colors.teal.withOpacity(0.1),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        stops: [0.0, 1.0],
+                                      ),
+                                      borderRadius: BorderRadius.circular(25),
+                                      border: Border.all(
+                                        color: Colors.teal.withOpacity(0.2),
+                                        width: 1,
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    butterfly.commonName,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.teal[800],
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Hero(
+                                          tag: 'butterfly-${butterfly.id}',
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                            child: Image.asset(
+                                              butterfly.imagePath,
+                                              height: 100,
+                                              width: 100,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => Container(
+                                                    height: 100,
+                                                    width: 100,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[200],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.bug_report,
+                                                      color: Colors.teal,
+                                                      size: 40,
+                                                    ),
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          butterfly.commonName ?? 'Unknown',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.teal[800],
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          '${butterfly.numberOfIndividuals?.toString() ?? '0'} individuals',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.blueGrey[500],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    butterfly.family,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.blueGrey[600],
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    '${butterfly.numberOfIndividuals} individuals',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.blueGrey[500],
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
+                          );
+                        },
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),
@@ -269,122 +374,132 @@ class DetailsPage extends StatelessWidget {
       onDismissed: (_) => Navigator.pop(context),
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.teal[50]!, Colors.white, Colors.blueGrey[50]!],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(
+            'Details',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: Colors.teal[800],
             ),
           ),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-              color: Colors.white.withOpacity(0.2),
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Hero(
-                        tag: 'butterfly-${butterfly.id}',
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Image.asset(
-                            butterfly.imagePath,
-                            height: 300,
-                            width: 300,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                                  height: 300,
-                                  width: 300,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(30),
+          centerTitle: true,
+        ),
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.teal[50]!, Colors.white, Colors.blueGrey[50]!],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                color: Colors.white.withOpacity(0.2),
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Hero(
+                          tag: 'butterfly-${butterfly.id}',
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Image.asset(
+                              butterfly.imagePath,
+                              height: 300,
+                              width: 300,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    height: 300,
+                                    width: 300,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Icon(
+                                      Icons.bug_report,
+                                      color: Colors.teal,
+                                      size: 100,
+                                    ),
                                   ),
-                                  child: Icon(
-                                    Icons.bug_report,
-                                    color: Colors.teal,
-                                    size: 100,
-                                  ),
-                                ),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 30),
-                      // Common Name
-                      Text(
-                        butterfly.commonName,
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal[900],
-                          shadows: [Shadow(color: Colors.white, blurRadius: 3)],
-                        ),
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                      ),
-                      SizedBox(height: 10),
-                      // Scientific Name
-                      Text(
-                        butterfly.science,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.teal[700],
-                        ),
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                      ),
-                      SizedBox(height: 15),
-                      // Info rows
-                      _buildInfoRow('Origin', butterfly.origin),
-                      _buildInfoRow('Family', butterfly.family),
-                      _buildInfoRow(
-                        'Individuals',
-                        butterfly.numberOfIndividuals.toString(),
-                      ),
-                      SizedBox(height: 20),
-                      // Description
-                      Container(
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.teal.withOpacity(0.2),
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          '"${butterfly.details}"',
+                        SizedBox(height: 30),
+                        Text(
+                          butterfly.commonName ?? 'Unknown',
                           style: TextStyle(
-                            fontSize: 18,
-                            fontStyle: FontStyle.italic,
-                            color: Colors.blueGrey[800],
-                            height: 1.5,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal[900],
+                            shadows: [
+                              Shadow(color: Colors.white, blurRadius: 3),
+                            ],
                           ),
                           textAlign: TextAlign.center,
-                          softWrap: true,
                         ),
-                      ),
-                      SizedBox(height: 30),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('Back to Gallery'),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 15,
+                        SizedBox(height: 10),
+                        Text(
+                          butterfly.science ?? '',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.teal[700],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 15),
+                        _buildInfoRow('Origin', butterfly.origin ?? 'Unknown'),
+                        _buildInfoRow('ID', butterfly.id?.toString() ?? 'N/A'),
+                        _buildInfoRow('Family', butterfly.family ?? 'Unknown'),
+                        _buildInfoRow(
+                          'Individuals',
+                          butterfly.numberOfIndividuals?.toString() ?? '0',
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.teal.withOpacity(0.2),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            '"${butterfly.details ?? ''}"',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.blueGrey[800],
+                              height: 1.5,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Back to Gallery'),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 15,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -395,32 +510,24 @@ class DetailsPage extends StatelessWidget {
     );
   }
 
-  /// ✅ Fixed version of info row with proper text wrapping
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 5),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Flexible(
-            flex: 2,
-            child: Text(
-              '$label: ',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.teal[800],
-              ),
-              softWrap: true,
+          Text(
+            '$label: ',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.teal[800],
             ),
           ),
           Flexible(
-            flex: 4,
             child: Text(
               value,
               style: TextStyle(fontSize: 16, color: Colors.blueGrey[700]),
-              softWrap: true, // ✅ text wraps to next line
-              overflow: TextOverflow.visible, // ✅ ensures full visibility
             ),
           ),
         ],
